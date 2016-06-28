@@ -1,7 +1,7 @@
 package airport
 
 
-import service.FileReader
+import airport.service.FileReader
 
 
 object Main {

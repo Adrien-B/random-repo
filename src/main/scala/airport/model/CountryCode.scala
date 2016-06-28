@@ -1,8 +1,6 @@
 package airport.model
 
-class CountryCode private(val code: String) extends AnyVal {
-  override def toString() = s""""$code.cc",""""
-}
+class CountryCode private(val code: String) extends AnyVal
 
 object CountryCode{
 

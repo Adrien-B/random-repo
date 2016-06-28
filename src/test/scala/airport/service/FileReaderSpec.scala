@@ -1,8 +1,8 @@
 package airport.service
 
+import airport.model.CountryCode.TestFactory.richString
 import airport.model._
 import org.scalatest.{MustMatchers, WordSpec}
-import airport.model.CountryCode.TestFactory.richString
 
 class FileReaderSpec extends WordSpec with MustMatchers {
 

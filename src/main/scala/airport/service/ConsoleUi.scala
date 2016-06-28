@@ -1,6 +1,6 @@
 package airport
 
-import airport.model.{Airport, Country, CountryCode}
+import airport.model.{Country, CountryCode}
 import airport.service.FileReader
 
 import scala.io.StdIn

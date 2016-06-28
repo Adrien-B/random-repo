@@ -1,12 +1,15 @@
 package airport.service
 
-import better.files.File
 import airport.model._
+import better.files.File
+import org.slf4j.LoggerFactory
 
-import scala.collection.mutable.{HashMap, PriorityQueue}
+import scala.collection.mutable.HashMap
 import scala.util.Try
 
 class FileReader {
+
+  private val logger = LoggerFactory.getLogger(classOf[FileReader])
 
   val countriesByCode = new HashMap[CountryCode, Country]
   val countriesByName = new HashMap[String, Country]
@@ -61,7 +64,7 @@ class FileReader {
         countriesByName += (name -> country)
         countriesByCode += (code -> country)
       case error =>
-        println(s"${error.mkString(", ")} is not a valid country")
+        logger.error(s"${error.mkString(", ")} is not a valid country")
     }
   }
 
@@ -71,8 +74,7 @@ class FileReader {
         val airports = Airport(code, AirportIdent(ident), name, typ) :: airportsByCCode.getOrElse(code, List.empty)
         airportsByCCode += (code -> airports)
       case error =>
-        println(line(8))
-        println(s"${error.mkString(", ")} is not a valid airport")
+        logger.error(s"${error.mkString(", ")} is not a valid airport")
     }
   }
 
@@ -89,7 +91,7 @@ class FileReader {
       val runaways = runway :: runwaysByAIdent.getOrElse(ident, List.empty)
       runwaysByAIdent += (ident -> runaways)
     }.getOrElse{
-      println(s"${line.mkString(", ")} is not a valid runaway")
+      logger.error(s"${line.mkString(", ")} is not a valid runaway")
     }
   }
 
