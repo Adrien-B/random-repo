@@ -1,22 +1,23 @@
 package airport
 
 import airport.model.{Country, CountryCode}
-import airport.service.FileReader
+import airport.service.{DataHandler, FileReader}
 
 import scala.io.StdIn
 
 
-class ConsoleUi(data: FileReader) {
+class ConsoleUi(data: DataHandler) {
 
-  def queryMenu() = {
-    val country = StdIn.readLine("Please enter a country code or a country name: ")
-    import data._
-    country match {
-      case CountryCode(code) if countriesByCode.get(code).isDefined => queryDisplay(countriesByCode.get(code).get)
-      case name if (countriesByName.get(name).isDefined) => queryDisplay(countriesByName.get(name).get)
-      case unknown =>
-        println(s"$unknown is not a known country code or name")
+  def queryMenu() : Unit = {
+    val nameOrCC = StdIn.readLine("Please enter a country code or a country name: ")
+    data.countriesForNameOrCC(nameOrCC) match {
+      case List(country) => queryDisplay(country)
+      case Nil => println(s"$nameOrCC is not a known country code or name")
         menu()
+      case list => println(s"$nameOrCC is not a known country code or name")
+        println("howover you may want to search for one of those name:")
+        list.foreach{item => println(s" $item")}
+        queryMenu()
     }
   }
 
@@ -28,7 +29,7 @@ class ConsoleUi(data: FileReader) {
         list.foreach{ airport =>
           println(s"${airport.ident.ident}: ${airport.name} a ${airport.typ} located in ${country.name}")
           runwaysByAIdent.get(airport.ident) match {
-            case None => println(" no runway informations for this airport")
+            case None => println("  |-no runway informations for this airport")
             case Some(runways) =>
               println(s"  |-This airport has ${runways.size} runway(s), we have those informations: ")
               runways.foreach{ runway =>

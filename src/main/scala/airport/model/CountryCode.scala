@@ -1,6 +1,8 @@
 package airport.model
 
-class CountryCode private(val code: String) extends AnyVal
+class CountryCode private(val code: String) extends AnyVal{
+  override def toString = code
+}
 
 object CountryCode{
 
@@ -12,6 +14,7 @@ object CountryCode{
       None
   }
 
+  def isCountryCode(possibleCC: String) = unapply(possibleCC).isDefined
 
   object TestFactory{
 

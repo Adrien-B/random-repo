@@ -16,35 +16,13 @@ class FileReader {
   val airportsByCCode = new HashMap[CountryCode, List[Airport]]
   val runwaysByAIdent = new HashMap[AirportIdent, List[Runway]]
 
-  private lazy val countryAndAirportSorted: List[(Either[Country, CountryCode], List[Airport])] = airportsByCCode
-    .toList
-    .map{case (cc, airports) => (countriesByCode.get(cc).toLeft(cc), airports)}
-    .sortBy(_._2.size)
-
-  def minAirportCountries = countryAndAirportSorted.take(10)
-    .map{ case (country, airports) => (country, airports.size)}
-
-  def maxAirportCountries = countryAndAirportSorted.takeRight(10)
-    .map{ case (country, airports) => (country, airports.size)}
-    .reverse
-
-  def countryAndRunwaySurface = {
-    countryAndAirportSorted.map{ case (country, airports) =>
-      val surfaces = airports.flatMap{airport =>
-        runwaysByAIdent.get(airport.ident)
-          .map(_.flatMap(_.surface))
-          .getOrElse(List())
-      }.distinct
-      (country, surfaces)
-    }
-  }
-
   def loadFiles() = {
+    logger.info("load countries")
     processLines("resources/countries.csv",insertCountry(_))
+    logger.info("load airports")
     processLines("resources/airports.csv",insertAirport(_))
+    logger.info("load runways")
     processLines("resources/runways.csv",insertRunway(_))
-    countryAndAirportSorted
-    ()
   }
 
   private def processLines[A](fileName: String, process: Seq[String] => Unit) = {

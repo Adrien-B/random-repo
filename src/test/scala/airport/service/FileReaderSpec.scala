@@ -6,11 +6,12 @@ import org.scalatest.{MustMatchers, WordSpec}
 
 class FileReaderSpec extends WordSpec with MustMatchers {
 
-  "FileReader" must {
+  trait Fixture {
+    val sut = new FileReader()
+  }
 
-    trait Fixture {
-      val sut = new FileReader()
-    }
+
+  "FileReader" must {
 
     "load valid runaway" in new Fixture {
       sut.insertRunway("259670,31876,ZUNZ,9843,,UNK,0,0,05,,,9644,,,23,,,9671".split(","))
@@ -40,48 +41,6 @@ class FileReaderSpec extends WordSpec with MustMatchers {
 
       sut.countriesByCode must equal(Map("AD".cc -> Country("AD".cc, "Andorra")))
       sut.countriesByName must equal(Map("Andorra" -> Country("AD".cc, "Andorra")))
-    }
-
-    "load file and extract minAirportList" in new Fixture {
-      sut.loadFiles()
-      sut.minAirportCountries must equal(List(
-        (Left(Country("CX".cc, "Christmas Island")), 1),
-        (Left(Country("AW".cc, "Aruba")), 1),
-        (Left(Country("NF".cc, "Norfolk Island")), 1),
-        (Left(Country("SX".cc, "Sint Maarten")), 1),
-        (Left(Country("GM".cc, "Gambia")), 1),
-        (Left(Country("YT".cc, "Mayotte")), 1),
-        (Left(Country("CW".cc, "Curaçao")), 1),
-        (Left(Country("MC".cc, "Monaco")), 1),
-        (Left(Country("BL".cc, "Saint Barthélemy")), 1),
-        (Left(Country("TV".cc, "Tuvalu")), 1)
-      ))
-    }
-
-    "load file and extract maxAirportList" in new Fixture {
-      sut.loadFiles()
-      sut.maxAirportCountries must equal(List(
-        (Left(Country("US".cc, "United States")), 21501),
-        (Left(Country("BR".cc, "Brazil")), 3839),
-        (Left(Country("CA".cc, "Canada")), 2454),
-        (Left(Country("AU".cc, "Australia")), 1908),
-        (Left(Country("RU".cc, "Russia")), 920),
-        (Left(Country("FR".cc, "France")), 789),
-        (Left(Country("AR".cc, "Argentina")), 713),
-        (Left(Country("DE".cc, "Germany")), 703),
-        (Left(Country("CO".cc, "Colombia")), 700),
-        (Left(Country("VE".cc, "Venezuela")), 592)
-      ))
-    }
-
-    "load file and extrat surface per country" in new Fixture {
-      sut.loadFiles()
-      sut.countryAndRunwaySurface(50) must equal(
-        Left(Country("BM".cc, "Bermuda")), List("ASP")
-      )
-      sut.countryAndRunwaySurface(100) must equal(
-        Left(Country("TN".cc,"Tunisia")),List("ASP", "CON", "PEM")
-      )
     }
   }
 }
